@@ -1,0 +1,67 @@
+@model IEnumerable<Pakland.Models.PropertyDetails>
+
+@{
+    ViewData["Title"] = "CityWiseProperty";
+}
+
+<div class="container">
+    <h1 class="mt-4 mb-4">Property Details</h1>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    @if (item.Image != null && item.Image.Length > 0)
+                    {
+                        var imageBase64 = Convert.ToBase64String(item.Image);
+                        var imageData = $"data:{(item.ImageType == "jpg" ? "image/jpeg" : "image/png")};base64,{imageBase64}";
+                        <img src="@imageData" class="card-img-top" alt="Property Image">
+                    }
+                    else
+                    {
+                        <img src="https://via.placeholder.com/300" class="card-img-top" alt="Placeholder Image">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Address)</h5>
+                        <p class="card-text">Size: @Html.DisplayFor(modelItem => item.Size)</p>
+                        <p class="card-text">City: @Html.DisplayFor(modelItem => item.City)</p>
+                        <p class="card-text">Date of Purchase: @Html.DisplayFor(modelItem => item.DateOfPurchase)</p>
+                        <a href="@Url.Action("Details", "PropertyDetails", new { id = item.Id })"
+                            class="btn btn-primary">Details</a>
+                        <a href="#" class="btn btn-success buy-btn" data-property-id="@item.Id">Buy</a>
+                        <!-- Add Buy button -->
+                        <span class="text-success sold-tag" style="display: none;">Sold</span> <!-- Sold tag -->
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.buy-btn').click(function (e) {
+                e.preventDefault();
+                var propertyId = $(this).data('property-id');
+                var soldTag = $(this).closest('.card-body').find('.sold-tag');
+
+                // Perform AJAX request to mark property as sold
+                $.post('@Url.Action("MarkAsSold", "PropertyDetails")', { id: propertyId })
+                    .done(function (data) {
+                        if (data.success) {
+                            // Hide the Buy button and show the Sold tag
+                            $(soldTag).show();
+                            $(e.target).hide(); // Hide the Buy button
+                        } else {
+                            alert('Failed to mark property as sold.');
+                        }
+                    })
+                    .fail(function () {
+                        alert('Failed to mark property as sold.');
+                    });
+            });
+        });
+    </script>
+}

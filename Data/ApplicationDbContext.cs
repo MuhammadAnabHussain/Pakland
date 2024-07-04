@@ -12,5 +12,7 @@ namespace Pakland.Data
         }
 
         public DbSet<PropertyDetails>? PropertyDetails { get; set; }
+
+
     }
 }

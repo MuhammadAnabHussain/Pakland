@@ -1,20 +1,25 @@
 ﻿<div class="container">
     <div class="row">
-        <div class="col-md-12 text-center">
-            <h1 class="display-4">Pakland</h1>
+        <div class="col-md-12 text-center pt-5">
+            <h1 class="display-6">PAK-LAND</h1>
             <p class="lead">Making Your Dreams Come True with Pakland</p>
         </div>
     </div>
+
     <div class="row mt-5">
         <!-- Islamabad Container -->
         <div class="col-md-4 mb-4">
-            <div class="card">
+            <div class="card city-card" data-city="Islamabad">
                 <a href="@Url.Action("CityWiseProperty", "Home", new { city = "Islamabad" })">
                     <img src="https://static.wixstatic.com/media/ee0244_67283cc5f859472690e80db40ad99ab9~mv2.jpg/v1/fill/w_640,h_640,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/ee0244_67283cc5f859472690e80db40ad99ab9~mv2.jpg"
                         class="card-img-top" alt="Islamabad Image">
                     <div class="card-body">
-                        <h5 class="card-title">Islamabad</h5>
-                        <p class="card-text">The Serene Capital</p>
+                        <div class="text-center">
+                            <h5 class="card-title"><a
+                                    href="@Url.Action("CityWiseProperty", "Home", new { city = "Islamabad" })"
+                                    class="city-link">Islamabad</a></h5>
+                            <p class="card-text city-slogan">The Serene Capital</p>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -22,13 +27,17 @@
 
         <!-- Lahore Container -->
         <div class="col-md-4 mb-4">
-            <div class="card">
+            <div class="card city-card" data-city="Lahore">
                 <a href="@Url.Action("CityWiseProperty", "Home", new { city = "Lahore" })">
                     <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/f6/25/f0/caption.jpg?w=300&h=300&s=1"
                         class="card-img-top" alt="Lahore Image">
                     <div class="card-body">
-                        <h5 class="card-title">Lahore</h5>
-                        <p class="card-text">The Cultural Hub</p>
+                        <div class="text-center">
+                            <h5 class="card-title"><a
+                                    href="@Url.Action("CityWiseProperty", "Home", new { city = "Lahore" })"
+                                    class="city-link">Lahore</a></h5>
+                            <p class="card-text city-slogan">The Cultural Hub</p>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -36,16 +45,45 @@
 
         <!-- Karachi Container -->
         <div class="col-md-4 mb-4">
-            <div class="card">
+            <div class="card city-card" data-city="Karachi">
                 <a href="@Url.Action("CityWiseProperty", "Home", new { city = "Karachi" })">
                     <img src="https://i.pinimg.com/474x/15/d3/78/15d3789c63bba9edc590725208f9ae70.jpg"
                         class="card-img-top" alt="Karachi Image">
                     <div class="card-body">
-                        <h5 class="card-title">Karachi</h5>
-                        <p class="card-text">The City of Lights</p>
+                        <div class="text-center">
+                            <h5 class="card-title"><a
+                                    href="@Url.Action("CityWiseProperty", "Home", new { city = "Karachi" })"
+                                    class="city-link">Karachi</a></h5>
+                            <p class="card-text city-slogan">The City of Lights</p>
+                        </div>
                     </div>
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .city-card {
+        transition: transform 0.3s ease;
+    }
+
+    .city-card:hover {
+        transform: scale(1.05) rotateY(5deg);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .city-link {
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .city-link:hover {
+        text-decoration: underline;
+    }
+
+    .city-slogan {
+        font-size: 0.9rem;
+    }
+</style>

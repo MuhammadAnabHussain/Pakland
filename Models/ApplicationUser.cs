@@ -7,5 +7,6 @@ namespace Pakland.Models // Replace with your actual namespace
         // Add additional properties if needed
 
         public string FullName { get; set; }
+
     }
 }

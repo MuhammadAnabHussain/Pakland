@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pakland.Models
 {
@@ -23,5 +24,9 @@ namespace Pakland.Models
         [StringLength(10)]
         public string? ImageType { get; set; }
         public bool IsSold { get; set; } = false;
+        [ForeignKey("User")]
+        public string? ApplicationUserId { get; set; }
+
+
     }
 }

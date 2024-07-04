@@ -29,9 +29,14 @@
                         <p class="card-text">Date of Purchase: @Html.DisplayFor(modelItem => item.DateOfPurchase)</p>
                         <a href="@Url.Action("Details", "PropertyDetails", new { id = item.Id })"
                             class="btn btn-primary">Details</a>
-                        <a href="#" class="btn btn-success buy-btn" data-property-id="@item.Id">Buy</a>
-                        <!-- Add Buy button -->
-                        <span class="text-success sold-tag" style="display: none;">Sold</span> <!-- Sold tag -->
+                        @if (!item.IsSold)
+                        {
+                            <a href="#" class="btn btn-success buy-btn" data-property-id="@item.Id">Buy</a>
+                        }
+                        else
+                        {
+                            <span class="text-success sold-tag">Sold</span>
+                        }
                     </div>
                 </div>
             </div>
@@ -44,16 +49,15 @@
         $(document).ready(function () {
             $('.buy-btn').click(function (e) {
                 e.preventDefault();
-                var propertyId = $(this).data('property-id');
-                var soldTag = $(this).closest('.card-body').find('.sold-tag');
+                var button = $(this);
+                var propertyId = button.data('property-id');
 
                 // Perform AJAX request to mark property as sold
                 $.post('@Url.Action("MarkAsSold", "PropertyDetails")', { id: propertyId })
                     .done(function (data) {
                         if (data.success) {
-                            // Hide the Buy button and show the Sold tag
-                            $(soldTag).show();
-                            $(e.target).hide(); // Hide the Buy button
+                            // Update UI to show the Sold tag
+                            button.removeClass('btn-success').addClass('btn-secondary').text('Sold').removeAttr('href').removeAttr('data-property-id').addClass('disabled');
                         } else {
                             alert('Failed to mark property as sold.');
                         }

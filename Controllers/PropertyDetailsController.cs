@@ -45,7 +45,7 @@ namespace Pakland.Controllers
             //     return NotFound("User not found.");
             // }
 
-            var properties = _context.PropertyDetails
+            var properties = _context?.PropertyDetails
                                      .Where(p => p.ApplicationUserId == user.Id && p.IsSold)
                                      .ToList();
 

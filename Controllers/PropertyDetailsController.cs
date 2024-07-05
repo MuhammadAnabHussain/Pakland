@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.SignalR;
 
 using Pakland.Services;
 using Pakland.Data;
 using Pakland.Models;
+using Pakland.Hubs;
 
 namespace Pakland.Controllers
 {
@@ -21,13 +23,16 @@ namespace Pakland.Controllers
         private readonly IPropertyService _propertyService;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
 
-        public PropertyDetailsController(ApplicationDbContext context, IPropertyService propertyService, UserManager<ApplicationUser> userManager)
+
+        public PropertyDetailsController(ApplicationDbContext context, IPropertyService propertyService, UserManager<ApplicationUser> userManager, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
             _propertyService = propertyService;
             _userManager = userManager;
+            _hubContext = hubContext;
         }
 
         // GET: PropertyDetails
@@ -77,8 +82,12 @@ namespace Pakland.Controllers
             _context.Update(property);
             await _context.SaveChangesAsync();
 
+            var message = $"User {user.UserName} marked property with ID {id} as sold.";
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", user.UserName, message);
+
             return Json(new { success = true });
         }
+
 
 
 

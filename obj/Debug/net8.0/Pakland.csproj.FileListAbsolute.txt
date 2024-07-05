@@ -260,3 +260,4 @@
 /Users/maliksahab/dotnet/Pakland/bin/Debug/net8.0/Microsoft.Extensions.Options.dll
 /Users/maliksahab/dotnet/Pakland/obj/Debug/net8.0/Pakland.MvcApplicationPartsAssemblyInfo.cs
 /Users/maliksahab/dotnet/Pakland/obj/Debug/net8.0/Pakland.sourcelink.json
+/Users/maliksahab/dotnet/Pakland/bin/Debug/net8.0/System.Net.WebSockets.WebSocketProtocol.dll

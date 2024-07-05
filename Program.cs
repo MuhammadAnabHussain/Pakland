@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Pakland.Data;
 using Pakland.Models;
 using Pakland.Services;
+using Pakland.Hubs;
 using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.SignalR;
 
 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
@@ -15,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
            .LogTo(Console.WriteLine, LogLevel.Information));
@@ -95,5 +98,6 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred while seeding roles.");
     }
 }
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

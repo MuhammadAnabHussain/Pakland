@@ -82,7 +82,7 @@ namespace Pakland.Controllers
             _context.Update(property);
             await _context.SaveChangesAsync();
 
-            var message = $"User {user.UserName} marked property with ID {id} as sold.";
+            var message = $"User {user.UserName} Purchase a property {property.Address} in {property.City}.";
             await _hubContext.Clients.All.SendAsync("ReceiveNotification", user.UserName, message);
 
             return Json(new { success = true });

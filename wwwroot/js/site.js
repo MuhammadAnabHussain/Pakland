@@ -5,7 +5,8 @@
 connection.on("ReceiveNotification", function (user, message) {
   const notificationElement = document.createElement("div");
   notificationElement.innerText = message;
-  notificationElement.style.backgroundColor = "yellow";
+  notificationElement.style.backgroundColor = "green";
+  notificationElement.style.Color = "white";
   notificationElement.style.padding = "10px";
   notificationElement.style.position = "fixed";
   notificationElement.style.top = "10px";

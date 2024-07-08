@@ -77,7 +77,7 @@ namespace Pakland.Controllers
             property.ApplicationUserId = user.Id;
 
             // Update property status as sold
-            property.IsSold = true;
+            property.IsSold = true; 
 
             _context.Update(property);
             await _context.SaveChangesAsync();

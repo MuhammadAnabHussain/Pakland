@@ -1,78 +1,102 @@
-﻿const connection = new signalR.HubConnectionBuilder()
+﻿"use strict";
+
+var connection = new signalR.HubConnectionBuilder()
   .withUrl("/notificationHub")
   .build();
 
-let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
-let notificationsViewed =
-  JSON.parse(localStorage.getItem("notificationsViewed")) || false;
-
-// Function to update the notification list in the dropdown
-function updateNotificationList() {
-  const notificationList = document.getElementById("notificationList");
-  notificationList.innerHTML = "";
-
-  notifications.forEach((notification) => {
-    const listItem = document.createElement("li");
-    listItem.classList.add("dropdown-item");
-    listItem.innerText = `${notification.message} - ${notification.timestamp}`;
-    notificationList.appendChild(listItem);
-  });
-
-  // Update the notification count
-  const notificationCount = document.getElementById("notificationCount");
-  const count = notificationsViewed ? 0 : notifications.length;
-  notificationCount.innerText = count;
-
-  // Show or hide the notification badge based on the count
-  if (count === 0) {
-    notificationCount.style.display = "none";
-  } else {
-    notificationCount.style.display = "inline";
-  }
-}
-
 connection.on("ReceiveNotification", function (user, message) {
-  // Store the notification in the array
-  const newNotification = {
-    user,
-    message,
-    timestamp: new Date().toLocaleString(),
-  };
-  notifications.push(newNotification);
-  localStorage.setItem("notifications", JSON.stringify(notifications));
-  notificationsViewed = false;
-  localStorage.setItem(
-    "notificationsViewed",
-    JSON.stringify(notificationsViewed)
-  );
-
-  // Update the notification list and count
-  updateNotificationList();
+  // Fetch notifications when a new notification is received
+  fetchNotifications();
 });
 
 connection.start().catch(function (err) {
   return console.error(err.toString());
 });
 
-// Add an event listener to the notification icon to populate the notification list when clicked
 document
   .getElementById("notificationDropdown")
-  .addEventListener("click", function () {
-    if (!notificationsViewed) {
-      notificationsViewed = true;
-      localStorage.setItem(
-        "notificationsViewed",
-        JSON.stringify(notificationsViewed)
-      );
-      localStorage.clear();
-    } else {
-      // Clear the notifications array and update localStorage
-      notifications = [];
-      localStorage.setItem("notifications", JSON.stringify(notifications));
-    }
-    // Update the notification list and count
-    updateNotificationList();
+  .addEventListener("click", function (event) {
+    // Fetch notifications when the bell icon is clicked
+    event.preventDefault();
+    console.log("Bell icon clicked");
+    fetchNotifications();
   });
 
-// Initial call to update the notification list and count on page load
-updateNotificationList();
+function fetchNotifications() {
+  console.log("Fetching notifications...");
+  fetch("/Notification/GetUnreadNotifications")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+      console.log("Response received");
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Data:", data);
+      var modalBody = document.getElementById("notificationModalBody");
+      console.log(modalBody);
+
+      // Clear existing notification items
+      modalBody.innerHTML = "";
+
+      // Create notification list items
+      if (data.length === 0) {
+        var emptyItem = document.createElement("p");
+        emptyItem.className = "text-center";
+        emptyItem.innerText = "No new notifications";
+        modalBody.appendChild(emptyItem);
+        console.log("no new notifications");
+      } else {
+        data.forEach((notification) => {
+          var notificationItem = document.createElement("div");
+          notificationItem.className = "notification-item mb-3";
+          notificationItem.innerHTML = `
+                <strong>${notification.message}</strong>
+                <br>
+                <small class="text-muted">${new Date(
+                  notification.timestamp
+                ).toLocaleString()}</small>
+                <button class="btn btn-sm btn-primary mark-as-read" data-notification-id="${
+                  notification.id
+                }">Mark as Read</button>
+                <hr>`;
+          modalBody.appendChild(notificationItem);
+        });
+
+        // Add event listener for mark as read buttons
+        modalBody.querySelectorAll(".mark-as-read").forEach((button) => {
+          button.addEventListener("click", markNotificationAsRead);
+        });
+      }
+
+      // Show the modal
+      $("#notificationModal").modal("show");
+    })
+    .catch((error) => console.error("Error fetching notifications:", error));
+}
+
+function markNotificationAsRead(event) {
+  var notificationId = event.target.getAttribute("data-notification-id");
+  console.log("Marking notification as read:", notificationId);
+
+  // Send a request to mark notification as read
+  fetch(`/Notification/MarkAsRead/${notificationId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ notificationId: notificationId }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      console.log("Notification marked as read successfully.");
+      // Optionally, update UI or fetch notifications again
+      fetchNotifications(); // Refresh the notifications list
+    })
+    .catch((error) =>
+      console.error("Error marking notification as read:", error)
+    );
+}

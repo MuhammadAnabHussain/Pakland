@@ -77,16 +77,30 @@ namespace Pakland.Controllers
             property.ApplicationUserId = user.Id;
 
             // Update property status as sold
-            property.IsSold = true; 
+            property.IsSold = true;
 
             _context.Update(property);
             await _context.SaveChangesAsync();
 
-            var message = $"User {user.UserName} Purchase a property {property.Address} in {property.City}.";
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", user.UserName, message);
+            // Create notification
+            var notification = new BuyingNotifications
+            {
+                Message = $"{user.UserName} purchased a property {property.Address} located in {property.City}.",
+                Timestamp = DateTime.Now,
+                IsSeen = false,
+                UserId = user.Id
+            };
+
+            _context.BuyingNotifications.Add(notification);
+            await _context.SaveChangesAsync();
+
+            // Send notification using SignalR
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", user.UserName, notification.Message);
 
             return Json(new { success = true });
         }
+
+
 
 
 

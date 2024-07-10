@@ -13,14 +13,41 @@ connection.start().catch(function (err) {
   return console.error(err.toString());
 });
 
-document
-  .getElementById("notificationDropdown")
-  .addEventListener("click", function (event) {
-    // Fetch notifications when the bell icon is clicked
-    event.preventDefault();
-    console.log("Bell icon clicked");
-    fetchNotifications();
-  });
+document.addEventListener("DOMContentLoaded", function () {
+  // Fetch unread notifications on page load to update the badge
+  fetchUnreadNotificationCount();
+
+  // Fetch unread notifications periodically (e.g., every 60 seconds)
+  setInterval(fetchUnreadNotificationCount, 60000); // 60,000 milliseconds = 60 seconds
+});
+
+function fetchUnreadNotificationCount() {
+  console.log("Fetching unread notification count...");
+  fetch("/Notification/GetUnreadNotifications")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+      console.log("Response received");
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Unread Notifications:", data);
+      var notificationBadge = document.getElementById("notificationBadge");
+
+      // Update notification badge count
+      var unreadCount = data.length;
+      if (unreadCount > 0) {
+        notificationBadge.innerText = unreadCount;
+        notificationBadge.style.display = "inline-block";
+      } else {
+        notificationBadge.style.display = "none";
+      }
+    })
+    .catch((error) =>
+      console.error("Error fetching unread notification count:", error)
+    );
+}
 
 function fetchNotifications() {
   console.log("Fetching notifications...");
@@ -93,8 +120,9 @@ function markNotificationAsRead(event) {
         throw new Error("Network response was not ok");
       }
       console.log("Notification marked as read successfully.");
-      // Optionally, update UI or fetch notifications again
-      fetchNotifications(); // Refresh the notifications list
+      // Refresh the notifications list
+      fetchUnreadNotificationCount();
+      fetchNotifications();
     })
     .catch((error) =>
       console.error("Error marking notification as read:", error)

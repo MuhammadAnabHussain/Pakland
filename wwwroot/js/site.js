@@ -1,16 +1,27 @@
 ﻿"use strict";
 
-var connection = new signalR.HubConnectionBuilder()
+var connection1 = new signalR.HubConnectionBuilder()
   .withUrl("/notificationHub")
   .build();
+var connection2 = new signalR.HubConnectionBuilder()
+  .withUrl("/messagingHub")
+  .build();
 
-connection.on("ReceiveNotification", function (user, message) {
+connection1.on("ReceiveNotification", function (user, message) {
   // Fetch notifications when a new notification is received
   fetchNotifications();
 });
+connection2.on("ReceiveMessage", function (user, message) {
+  var msg = document.createElement("div");
+  msg.textContent = user + ": " + message;
+  document.getElementById("messagesList").appendChild(msg);
+});
 
-connection.start().catch(function (err) {
+connection1.start().catch(function (err) {
   return console.error(err.toString());
+});
+connection2.start().catch(function (err) {
+  console.error(err.toString());
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -155,6 +166,11 @@ function loadMap(city) {
     }
   });
 }
+function sendMessageToHub(user, message) {
+  connection.invoke("SendMessage", user, message).catch(function (err) {
+    console.error(err.toString());
+  });
+}
 
 $(document).ready(function () {
   $(".buy-btn").click(function (e) {
@@ -191,3 +207,31 @@ $(document).ready(function () {
     loadMap(city);
   });
 });
+
+document.getElementById("botContainer").addEventListener("click", function () {
+  $("#chatWindow").collapse("toggle");
+});
+
+document
+  .getElementById("sendMessageButton")
+  .addEventListener("click", function (event) {
+    var user = loggedInUser; // Use the logged-in user's name
+    var message = document.getElementById("messageInput").value;
+
+    if (isAdmin === "true") {
+      // Admin sending a reply
+      var targetUser = prompt("Enter the user to send the reply to:");
+      connection
+        .invoke("SendReply", user, targetUser, message)
+        .catch(function (err) {
+          return console.error(err.toString());
+        });
+    } else {
+      // Regular user sending a message to admin
+      connection.invoke("SendMessage", user, message).catch(function (err) {
+        return console.error(err.toString());
+      });
+    }
+
+    event.preventDefault();
+  });

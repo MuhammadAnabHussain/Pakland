@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/Users/maliksahab/dotnet/Pakland/wwwroot/images/bot.png",
+      "PackagePath": "staticwebassets/images/bot.png"
+    },
+    {
+      "Id": "/Users/maliksahab/dotnet/Pakland/wwwroot/images/cover.png",
+      "PackagePath": "staticwebassets/images/cover.png"
+    },
+    {
       "Id": "/Users/maliksahab/dotnet/Pakland/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
     },

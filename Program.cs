@@ -99,5 +99,5 @@ using (var scope = app.Services.CreateScope())
     }
 }
 app.MapHub<NotificationHub>("/notificationHub");
-
+app.MapHub<NotificationHub>("/messagingHub");
 app.Run();

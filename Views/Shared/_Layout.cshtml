@@ -68,7 +68,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light navbar-custom border-bottom">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Pakland</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PAKLAND</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -162,7 +162,9 @@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+
         </main>
+        @await Html.PartialAsync("_BotPartial")
     </div>
     <footer class="border-top footer text-muted">
         <div class="container">

@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fetchUnreadNotificationCount();
 
   // Fetch unread notifications periodically (e.g., every 60 seconds)
-  setInterval(fetchUnreadNotificationCount, 60000); // 60,000 milliseconds = 60 seconds
+  setInterval(fetchUnreadNotificationCount, 3000); // 10,000 milliseconds = 10 seconds
 });
 
 function fetchUnreadNotificationCount() {
@@ -128,3 +128,66 @@ function markNotificationAsRead(event) {
       console.error("Error marking notification as read:", error)
     );
 }
+function initMap() {
+  // Initialize the map with a default location
+  //   var map = new google.maps.Map(document.getElementById("map"), {
+  //     center: { lat: -34.397, lng: 150.644 },
+  //     zoom: 8,
+  //   });
+}
+
+function loadMap(city) {
+  // Use the Google Maps Geocoding API to get the coordinates of the city
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ address: city }, function (results, status) {
+    if (status === "OK") {
+      var map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 10,
+        center: results[0].geometry.location,
+      });
+
+      var marker = new google.maps.marker.AdvancedMarkerElement({
+        position: results[0].geometry.location,
+        map: map,
+      });
+    } else {
+      alert("Geocode was not successful for the following reason: " + status);
+    }
+  });
+}
+
+$(document).ready(function () {
+  $(".buy-btn").click(function (e) {
+    e.preventDefault();
+    var button = $(this);
+    var propertyId = button.data("property-id");
+
+    // Perform AJAX request to mark property as sold
+    $.post("/PropertyDetails/MarkAsSold", { id: propertyId })
+      .done(function (data) {
+        if (data.success) {
+          // Update UI to show the Sold tag
+          button
+            .removeClass("btn-success")
+            .addClass("btn-secondary")
+            .text("Sold")
+            .removeAttr("href")
+            .removeAttr("data-property-id")
+            .addClass("disabled");
+        } else {
+          alert("Failed to mark property as sold.");
+        }
+      })
+      .fail(function () {
+        alert("Failed to mark property as sold.");
+      });
+  });
+
+  $(".map-btn").click(function () {
+    var city = $(this).data("city");
+    // Open the map modal
+    $("#mapModal").modal("show");
+    // Load the map centered on the city
+    loadMap(city);
+  });
+});

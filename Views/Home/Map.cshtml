@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Map";
+}
+
+<h2>Map</h2>
+
+<div id="map" style="height: 500px; width: 100%;"></div>
+
+<script>
+    function initMap() {
+        // Initialize the map with a default location
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -34.397, lng: 150.644 },
+            zoom: 8
+        });
+
+        // Add a click event listener to the map
+        map.addListener('click', function (event) {
+            // Get the clicked location's coordinates
+            var lat = event.latLng.lat();
+            var lng = event.latLng.lng();
+
+            // Optionally, you can reverse geocode to get the city name
+            // and then use it to navigate to the specific city
+
+            // Example: Directly move the map to the clicked location
+            map.setCenter({ lat: lat, lng: lng });
+        });
+    }
+</script>

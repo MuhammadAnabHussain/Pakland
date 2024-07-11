@@ -4,6 +4,7 @@
     ViewData["Title"] = "CityWiseProperty";
 }
 
+
 <div class="container">
     <h1 class="mt-4 mb-4">Property Details</h1>
 
@@ -37,35 +38,38 @@
                         {
                             <span class="text-success sold-tag">Sold</span>
                         }
+
+                        <button class="btn btn-info map-btn" data-city="@item.City">Map</button>
+
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
+<div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="mapModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mapModalLabel">City Map</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="map" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>
-        $(document).ready(function () {
-            $('.buy-btn').click(function (e) {
-                e.preventDefault();
-                var button = $(this);
-                var propertyId = button.data('property-id');
 
-                // Perform AJAX request to mark property as sold
-                $.post('@Url.Action("MarkAsSold", "PropertyDetails")', { id: propertyId })
-                    .done(function (data) {
-                        if (data.success) {
-                            // Update UI to show the Sold tag
-                            button.removeClass('btn-success').addClass('btn-secondary').text('Sold').removeAttr('href').removeAttr('data-property-id').addClass('disabled');
-                        } else {
-                            alert('Failed to mark property as sold.');
-                        }
-                    })
-                    .fail(function () {
-                        alert('Failed to mark property as sold.');
-                    });
-            });
-        });
+
     </script>
+
 }

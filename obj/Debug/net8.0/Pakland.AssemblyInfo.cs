@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Pakland")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9106d0f04b01f566d12af8fd54eede6cc3335ba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+04700ce2dc2e61dc078094d456acfd704f5ef6f6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Pakland")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Pakland")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
